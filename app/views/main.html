@@ -1,0 +1,5 @@
+<div class=row ng-repeat="fileGroup in files | groupBy:4">
+  <div class="col-xs-3 letter-box" ng-repeat="file in fileGroup" >
+    <div>{{file.fileName}}</div>
+  </div>
+</div>
