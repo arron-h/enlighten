@@ -14,6 +14,7 @@ angular.module('enlightenApp')
 
 		var onSuccess = function(db)
 		{
+			$scope.hasError = false;
 			var res = db.exec("SELECT originalFilename FROM AgLibraryFile LIMIT 100");
 
 			for (var i = 0; i < res[0].values.length; ++i)
@@ -27,13 +28,58 @@ angular.module('enlightenApp')
 
 		var onError = function()
 		{
-			console.warn("Error loading database file");
+			$scope.hasError = true;
 		}
 
 		SqliteDatabase("cat.lrcat", { success: onSuccess, error: onError });
 	}])
 
-	.controller('PathsCtrl', function ($scope)
+	.controller('PathsCtrl', ['$scope', 'SqliteDatabase', function ($scope, SqliteDatabase)
 	{
-		$scope.paths = ["a/", "b/", "c/"];
-	});
+		$scope.paths = {};
+
+		var onSuccess = function(db)
+		{
+			var rootFolders = db.exec("SELECT id_local,name FROM AgLibraryRootFolder");
+			var libraryFolders = db.exec("SELECT id_local,pathFromRoot,rootFolder FROM AgLibraryFolder");
+
+			// Process root folders
+			for (var rootIdx = 0; rootIdx < rootFolders[0].values.length; ++rootIdx)
+			{
+				var rowVal   = rootFolders[0].values[rootIdx];
+				var id_local = rowVal[0];
+				$scope.paths[id_local] =
+				{
+					name: rowVal[1],
+					children: null
+				}
+			}
+
+			// Process subfolders
+			for (var folderIdx = 0; folderIdx < libraryFolders[0].values.length; ++folderIdx)
+			{
+				var rowVal = libraryFolders[0].values[folderIdx];
+				var rootIndex = rowVal[2];
+				var id_local  = rowVal[0];
+
+				if (rowVal[1] == "")
+					continue;
+
+				if (!$scope.paths[rootIndex].children)
+					$scope.paths[rootIndex].children = {};
+
+				$scope.paths[rootIndex].children[id_local] =
+				{
+					name: rowVal[1]
+				}
+			}
+
+			console.log($scope.paths);
+		}
+
+		var onError = function()
+		{
+		}
+
+		SqliteDatabase("cat.lrcat", { success: onSuccess, error: onError });
+	}]);

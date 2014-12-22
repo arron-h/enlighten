@@ -56,14 +56,12 @@ angular.module('enlightenApp')
 						}
 						else
 						{
-							console.warn("Status code != 200. Bailing.");
 							databaseObjects[url].promises =
 								invokeCallbacks(databaseObjects[url].promises, "error");
 						}
 					})
 					.error(function(response, status)
 					{
-						console.warn("Error loading database object.");
 						databaseObjects[url].promises =
 							invokeCallbacks(databaseObjects[url].promises, "error");
 					});
