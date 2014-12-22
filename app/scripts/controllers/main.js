@@ -36,4 +36,9 @@ angular.module('enlightenApp')
 		req.onload = databaseDownloaded;
 		req.open("GET", "cat.lrcat", true);
 		req.send();
-	}]);
+	}])
+
+	.controller('PathsCtrl', function ($scope)
+	{
+		$scope.paths = ["a/", "b/", "c/"];
+	});

@@ -1,5 +1,18 @@
-<div class=row ng-repeat="fileGroup in files | groupBy:4">
-  <div class="col-xs-3 letter-box" ng-repeat="file in fileGroup" >
-    <div>{{file.fileName}}</div>
-  </div>
+<div class="row">
+	<!-- Sidebar -->
+	<div class="col-md-3" ng-controller="PathsCtrl">
+		<ul>
+			<li ng-repeat="path in paths">{{path}}</li>
+		</ul>
+	</div>
+
+	<!-- Content -->
+	<div class="col-md-9" ng-controller="MainCtrl">
+		<div class=row ng-repeat="fileGroup in files | groupBy:4">
+			<div class="col-md-3 letter-box" ng-repeat="file in fileGroup" >
+				<div>{{file.fileName}}</div>
+			</div>
+		</div>
+	</div>
 </div>
+
