@@ -5,8 +5,9 @@
 
 		<treecontrol class="tree-classic"
 		   tree-model="folderModel"
-		   options="folderTreeOptions">
-			{{node.name}}
+		   options="folderTreeOptions"
+		   on-selection="folderItemClicked(node)">
+		   <span class="item-name">{{node.name}}</span><span class="item-count">{{node.itemCount}}</span>
 		</treecontrol>
 
 		<h3>Collections</h3>

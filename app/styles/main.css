@@ -77,3 +77,8 @@ body {
     border-bottom: 0;
   }
 }
+
+/* Folder tree styling */
+.tree-classic .item-count {
+	float: right;
+}
