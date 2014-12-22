@@ -12,15 +12,33 @@ angular.module('enlightenApp')
 	{
 		var databaseObjects = {};
 
-		return function(url, callback)
+		return function(url, callbacks)
 		{
+			if (typeof callbacks != "object")
+				throw new TypeError("Callbacks must be an object");
+
 			if (!databaseObjects[url])
 			{
-				// Add this callback to a promise list
+				// Add the callbacks to a promise list
 				databaseObjects[url] =
 				{
-					promises: [callback],
+					promises: [callbacks],
 					database: null
+				}
+
+				var invokeCallbacks = function(promiseList, callbackType)
+				{
+					// Invoke promises
+					while (promiseList.length > 0)
+					{
+						var topIdx = promiseList.length - 1;
+						var fn     = promiseList[topIdx][callbackType];
+						fn(databaseObjects[url].database);
+
+						promiseList.pop();
+					}
+
+					return promiseList;
 				}
 
 				$http.get(url, {responseType: "arraybuffer"})
@@ -33,34 +51,32 @@ angular.module('enlightenApp')
 
 							databaseObjects[url].database = db;
 
-							// Invoke promises
-							while (databaseObjects[url].promises.length > 0)
-							{
-								var fn = databaseObjects[url].promises[0];
-								fn(databaseObjects[url].database);
-
-								databaseObjects[url].promises.pop();
-							}
+							databaseObjects[url].promises =
+								invokeCallbacks(databaseObjects[url].promises, "success");
 						}
 						else
 						{
 							console.warn("Status code != 200. Bailing.");
+							databaseObjects[url].promises =
+								invokeCallbacks(databaseObjects[url].promises, "error");
 						}
 					})
 					.error(function(response, status)
 					{
 						console.warn("Error loading database object.");
+						databaseObjects[url].promises =
+							invokeCallbacks(databaseObjects[url].promises, "error");
 					});
 			}
 			else
 			{
 				if (databaseObjects[url].database)
 				{
-					callback(databaseObjects[url].database);
+					callbacks.success(databaseObjects[url].database);
 				}
 				else
 				{
-					databaseObjects[url].promises.push(callback);
+					databaseObjects[url].promises.push(callbacks);
 				}
 			}
 		}
