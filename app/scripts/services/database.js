@@ -8,7 +8,7 @@
  * Loads and returns a Sqlite database via XMLHttpRequest
  */
 angular.module('enlightenApp')
-	.factory('SqliteDatabase', function()
+	.factory('SqliteDatabase', ["$http", function($http)
 	{
 		var databaseObjects = {};
 
@@ -23,30 +23,34 @@ angular.module('enlightenApp')
 					database: null
 				}
 
-				// Load the database via XMLHttpRequest
-				var databaseDownloaded = function()
-				{
-					var data = new Uint8Array(this.response);
-					var db = new SQL.Database(data);
-
-					databaseObjects[url].database = db;
-
-					// Invoke promises
-					while (databaseObjects[url].promises.length > 0)
+				$http.get(url, {responseType: "arraybuffer"})
+					.success(function(response, status)
 					{
-						var fn = databaseObjects[url].promises[0];
-						fn(databaseObjects[url].database);
+						if (status == 200)
+						{
+							var data = new Uint8Array(response);
+							var db = new SQL.Database(data);
 
-						databaseObjects[url].promises.pop();
-					}
-				}
+							databaseObjects[url].database = db;
 
-				// Grab the database
-				var req = new XMLHttpRequest();
-				req.responseType = "arraybuffer";
-				req.onload = databaseDownloaded;
-				req.open("GET", url, true);
-				req.send();
+							// Invoke promises
+							while (databaseObjects[url].promises.length > 0)
+							{
+								var fn = databaseObjects[url].promises[0];
+								fn(databaseObjects[url].database);
+
+								databaseObjects[url].promises.pop();
+							}
+						}
+						else
+						{
+							console.warn("Status code != 200. Bailing.");
+						}
+					})
+					.error(function(response, status)
+					{
+						console.warn("Error loading database object.");
+					});
 			}
 			else
 			{
@@ -60,4 +64,4 @@ angular.module('enlightenApp')
 				}
 			}
 		}
-	});
+	}]);
