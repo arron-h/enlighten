@@ -8,22 +8,38 @@
  * Controller of the enlightenApp
  */
 angular.module('enlightenApp')
-	.controller('MainCtrl', ['$scope', 'SqliteDatabase', function ($scope, SqliteDatabase)
+	.controller('MainCtrl',
+		['$scope', 'SqliteDatabase', 'Evented', 'FilterFactory',
+			function ($scope, SqliteDatabase, Evented, FilterFactory)
 	{
 		$scope.files = [];
+		var db       = null;
 
-		var onSuccess = function(db)
+		var onFilterChanged = function(filter)
+		{
+			$scope.files = [];
+
+			var res = filter.executeQuery(db);
+
+			if (res.length)
+			{
+				for (var i = 0; i < res[0].values.length; ++i)
+				{
+					$scope.files.push(
+					{
+						fileName: res[0].values[i][0]
+					});
+				}
+			}
+		}
+
+		var onSuccess = function(database)
 		{
 			$scope.hasError = false;
-			var res = db.exec("SELECT originalFilename FROM AgLibraryFile LIMIT 100");
+			db = database;
 
-			for (var i = 0; i < res[0].values.length; ++i)
-			{
-				$scope.files.push(
-				{
-					fileName: res[0].values[i][0]
-				});
-			}
+			var filter = FilterFactory.defaultFilter();
+			onFilterChanged(filter);
 		}
 
 		var onError = function()
@@ -32,9 +48,12 @@ angular.module('enlightenApp')
 		}
 
 		SqliteDatabase("cat.lrcat", { success: onSuccess, error: onError });
+		Evented.register("FilterChanged", onFilterChanged);
 	}])
 
-	.controller('PathsCtrl', ['$scope', 'SqliteDatabase', function ($scope, SqliteDatabase)
+	.controller('PathsCtrl',
+		['$scope', 'SqliteDatabase', 'Evented', 'FilterFactory',
+			function ($scope, SqliteDatabase, Evented, FilterFactory)
 	{
 		$scope.folderModel = [];
 		$scope.folderTreeOptions = {
@@ -54,7 +73,9 @@ angular.module('enlightenApp')
 				var rowVal     = rootFolders[0].values[rootIdx];
 				var arrayIndex = $scope.folderModel.push(
 				{
+					id: rowVal[0],
 					name: rowVal[1],
+					itemCount: 0,
 					children: []
 				}) - 1;
 
@@ -75,13 +96,23 @@ angular.module('enlightenApp')
 				var rootArrayIndex = folderIndices[rootIndex];
 				$scope.folderModel[rootArrayIndex].children.push(
 				{
-					name: rowVal[1]
+					id: id_local,
+					name: rowVal[1],
+					itemCount: 0
 				});
 			}
 		}
 
 		var onError = function()
 		{
+		}
+
+		$scope.folderItemClicked = function(node)
+		{
+			var folderFilter = FilterFactory.getFilter("FolderFilter");
+			folderFilter.folderIndex  = node.id;
+			folderFilter.folderIsRoot = !!node.children;
+			Evented.emit("FilterChanged", [folderFilter]);
 		}
 
 		SqliteDatabase("cat.lrcat", { success: onSuccess, error: onError });
