@@ -8,15 +8,12 @@
  * Controller of the enlightenApp
  */
 angular.module('enlightenApp')
-	.controller('MainCtrl', ['$scope', function ($scope)
+	.controller('MainCtrl', ['$scope', 'SqliteDatabase', function ($scope, SqliteDatabase)
 	{
 		$scope.files = [];
 
-		var databaseDownloaded = function()
+		SqliteDatabase("cat.lrcat", function(db)
 		{
-			var data = new Uint8Array(this.response);
-			var db = new SQL.Database(data);
-
 			var res = db.exec("SELECT originalFilename FROM AgLibraryFile LIMIT 100");
 
 			for (var i = 0; i < res[0].values.length; ++i)
@@ -28,14 +25,7 @@ angular.module('enlightenApp')
 			}
 
 			$scope.$apply();
-		}
-
-		// Grab the database
-		var req = new XMLHttpRequest();
-		req.responseType = "arraybuffer";
-		req.onload = databaseDownloaded;
-		req.open("GET", "cat.lrcat", true);
-		req.send();
+		});
 	}])
 
 	.controller('PathsCtrl', function ($scope)
