@@ -32,9 +32,9 @@ body {
 }
 
 /* Customize container */
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .container {
-    max-width: 730px;
+    max-width: 1280px;
   }
 }
 .container-narrow > hr {
@@ -76,4 +76,9 @@ body {
   .jumbotron {
     border-bottom: 0;
   }
+}
+
+/* Folder tree styling */
+.tree-classic .item-count {
+	float: right;
 }
