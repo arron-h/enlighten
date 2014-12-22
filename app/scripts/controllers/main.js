@@ -23,8 +23,6 @@ angular.module('enlightenApp')
 					fileName: res[0].values[i][0]
 				});
 			}
-
-			$scope.$apply();
 		});
 	}])
 
