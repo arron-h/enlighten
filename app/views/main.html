@@ -2,16 +2,13 @@
 	<!-- Sidebar -->
 	<div class="col-md-3" ng-controller="PathsCtrl">
 		<h3>Folders</h3>
-		<ul>
-			<li ng-repeat="path in paths">
-				{{path.name}}
-				<ul ng-if="path.children">
-					<li ng-repeat="subpath in path.children">
-					{{subpath.name}}
-					</li>
-				</ul>
-			</li>
-		</ul>
+
+		<treecontrol class="tree-classic"
+		   tree-model="folderModel"
+		   options="folderTreeOptions">
+			{{node.name}}
+		</treecontrol>
+
 		<h3>Collections</h3>
 		<ul>
 			<li ng-repeat="collection in collections">{{collection}}</li>

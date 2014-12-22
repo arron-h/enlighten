@@ -36,23 +36,30 @@ angular.module('enlightenApp')
 
 	.controller('PathsCtrl', ['$scope', 'SqliteDatabase', function ($scope, SqliteDatabase)
 	{
-		$scope.paths = {};
+		$scope.folderModel = [];
+		$scope.folderTreeOptions = {
+		}
 
 		var onSuccess = function(db)
 		{
 			var rootFolders = db.exec("SELECT id_local,name FROM AgLibraryRootFolder");
 			var libraryFolders = db.exec("SELECT id_local,pathFromRoot,rootFolder FROM AgLibraryFolder");
 
+			// Track the folder indices
+			var folderIndices = {}
+
 			// Process root folders
 			for (var rootIdx = 0; rootIdx < rootFolders[0].values.length; ++rootIdx)
 			{
-				var rowVal   = rootFolders[0].values[rootIdx];
-				var id_local = rowVal[0];
-				$scope.paths[id_local] =
+				var rowVal     = rootFolders[0].values[rootIdx];
+				var arrayIndex = $scope.folderModel.push(
 				{
 					name: rowVal[1],
-					children: null
-				}
+					children: []
+				}) - 1;
+
+				var id_local   = rowVal[0];
+				folderIndices[id_local] = arrayIndex;
 			}
 
 			// Process subfolders
@@ -65,16 +72,12 @@ angular.module('enlightenApp')
 				if (rowVal[1] == "")
 					continue;
 
-				if (!$scope.paths[rootIndex].children)
-					$scope.paths[rootIndex].children = {};
-
-				$scope.paths[rootIndex].children[id_local] =
+				var rootArrayIndex = folderIndices[rootIndex];
+				$scope.folderModel[rootArrayIndex].children.push(
 				{
 					name: rowVal[1]
-				}
+				});
 			}
-
-			console.log($scope.paths);
 		}
 
 		var onError = function()
