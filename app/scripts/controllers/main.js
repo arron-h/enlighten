@@ -12,7 +12,7 @@ angular.module('enlightenApp')
 	{
 		$scope.files = [];
 
-		SqliteDatabase("cat.lrcat", function(db)
+		var onSuccess = function(db)
 		{
 			var res = db.exec("SELECT originalFilename FROM AgLibraryFile LIMIT 100");
 
@@ -23,7 +23,14 @@ angular.module('enlightenApp')
 					fileName: res[0].values[i][0]
 				});
 			}
-		});
+		}
+
+		var onError = function()
+		{
+			console.warn("Error loading database file");
+		}
+
+		SqliteDatabase("cat.lrcat", { success: onSuccess, error: onError });
 	}])
 
 	.controller('PathsCtrl', function ($scope)
