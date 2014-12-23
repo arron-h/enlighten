@@ -19,11 +19,15 @@
 	<!-- Content -->
 	<div class="col-md-9" ng-controller="MainCtrl">
 		<div ng-show="hasError" class="alert alert-danger">Failed to load database.</div>
-		<div class=row ng-repeat="fileGroup in files | groupBy:4">
-			<div class="col-md-3 letter-box" ng-repeat="file in fileGroup" >
-				<div>{{file.fileName}}</div>
+		<div infinite-scroll='onLoadMoreContent()' infinite-scroll-disabled='loadingData' infinite-scroll-distance='1'>
+			<div class=row ng-repeat="fileGroup in files | groupBy:4">
+				<div class="col-md-3 letter-box" ng-repeat="file in fileGroup" >
+					<img src="http://placehold.it/200x133&text={{file.fileName}}">
+					<div>{{file.fileName}}</div>
+				</div>
 			</div>
 		</div>
+		<div ng-show="loadingData" class="alert alert-info" role="alert">Loading more data...</div>
 	</div>
 </div>
 
