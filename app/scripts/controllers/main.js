@@ -12,12 +12,15 @@ angular.module('enlightenApp')
 		['$scope', 'SqliteDatabase', 'Evented', 'FilterFactory',
 			function ($scope, SqliteDatabase, Evented, FilterFactory)
 	{
-		$scope.files = [];
-		var db       = null;
+		$scope.files       = [];
+		$scope.loadingData = false;
 
-		var onFilterChanged = function(filter)
+		var db             = null;
+		var currentFilter  = null;
+
+		var loadContent = function(filter)
 		{
-			$scope.files = [];
+			$scope.loadingData = true;
 
 			var res = filter.executeQuery(db);
 
@@ -31,6 +34,15 @@ angular.module('enlightenApp')
 					});
 				}
 			}
+
+			currentFilter      = filter;
+			$scope.loadingData = false;
+		}
+
+		var onFilterChanged = function(filter)
+		{
+			$scope.files = [];
+			loadContent(filter);
 		}
 
 		var onSuccess = function(database)
@@ -45,6 +57,20 @@ angular.module('enlightenApp')
 		var onError = function()
 		{
 			$scope.hasError = true;
+		}
+
+		$scope.onLoadMoreContent = function()
+		{
+			if ($scope.loadingData)
+				return;
+
+			if (!currentFilter)
+				return;
+
+			var filter = currentFilter;
+			filter.increaseRange();
+
+			loadContent(filter);
 		}
 
 		SqliteDatabase("cat.lrcat", { success: onSuccess, error: onError });

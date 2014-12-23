@@ -14,15 +14,26 @@ angular.module('enlightenApp')
 		{
 			"Limit100": function()
 			{
+				var upperBound = 100;
+				var offset     = 0;
+
 				this.executeQuery = function(db)
 				{
 					return db.exec("SELECT originalFilename FROM AgLibraryFile " +
-						"LIMIT 100");
+						"LIMIT " + upperBound + " OFFSET " + offset);
+				}
+
+				this.increaseRange = function()
+				{
+					offset += 100;
 				}
 			},
 
 			"FolderFilter": function()
 			{
+				var upperBound = 100;
+				var offset     = 0;
+
 				this.executeQuery = function(db)
 				{
 					var query;
@@ -51,9 +62,15 @@ angular.module('enlightenApp')
 					}
 
 					query = "SELECT originalFilename FROM AgLibraryFile " +
-						"WHERE folder IN (" + indices + ") LIMIT 100";
+						"WHERE folder IN (" + indices + ") " +
+						"LIMIT " + upperBound + " OFFSET " + offset;
 
 					return db.exec(query);
+				}
+
+				this.increaseRange = function()
+				{
+					offset += 100;
 				}
 
 				this.folderIndex  = 0;

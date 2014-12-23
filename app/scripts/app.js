@@ -17,7 +17,8 @@ angular
     'ngSanitize',
     'ngTouch',
 	'angular.filter',
-	'treeControl'
+	'treeControl',
+	'infinite-scroll'
   ])
   .config(function ($routeProvider) {
     $routeProvider
