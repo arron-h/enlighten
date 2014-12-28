@@ -27,9 +27,11 @@ module.exports = function(config) {
       'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/angular-touch/angular-touch.js',
       'bower_components/angular-filter/dist/angular-filter.js',
+      'bower_components/angular-tree-control/angular-tree-control.js',
+      'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
+      'bower_components/aws-sdk-js/dist/aws-sdk.js',
       'bower_components/sql.js/js/sql.js',
       'app/scripts/**/*.js',
-      'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],
 
@@ -37,7 +39,7 @@ module.exports = function(config) {
     exclude: [],
 
     // web server port
-    port: 8080,
+    port: 9876,
 
     // Start these browsers, currently available:
     // - Chrome

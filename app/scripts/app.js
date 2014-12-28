@@ -25,6 +25,9 @@ angular
       .when('/', {
         templateUrl: 'views/main.html'
       })
+	  .when('/settings', {
+		templateUrl: 'views/settings.html'
+	  })
       .otherwise({
         redirectTo: '/'
       });

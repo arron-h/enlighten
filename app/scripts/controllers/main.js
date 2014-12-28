@@ -9,8 +9,8 @@
  */
 angular.module('enlightenApp')
 	.controller('MainCtrl',
-		['$scope', 'SqliteDatabase', 'Evented', 'FilterFactory',
-			function ($scope, SqliteDatabase, Evented, FilterFactory)
+		['$scope', '$location', 'SqliteDatabase', 'Evented', 'FilterFactory', 'Settings',
+			function ($scope, $location, SqliteDatabase, Evented, FilterFactory, Settings)
 	{
 		$scope.files       = [];
 		$scope.loadingData = false;
@@ -73,8 +73,16 @@ angular.module('enlightenApp')
 			loadContent(filter);
 		}
 
-		SqliteDatabase("cat.lrcat", { success: onSuccess, error: onError });
-		Evented.register("FilterChanged", onFilterChanged);
+		// First check that the AWS options have been set
+		if (!Settings.hasCredentials())
+		{
+			$location.url("/settings");
+		}
+		else
+		{
+			SqliteDatabase(Settings.getLightoomSettings().pathToLrCat, { success: onSuccess, error: onError });
+			Evented.register("FilterChanged", onFilterChanged);
+		}
 	}])
 
 	.controller('PathsCtrl',
@@ -141,5 +149,5 @@ angular.module('enlightenApp')
 			Evented.emit("FilterChanged", [folderFilter]);
 		}
 
-		SqliteDatabase("cat.lrcat", { success: onSuccess, error: onError });
+		SqliteDatabase(Settings.getLightoomSettings().pathToLrCat, { success: onSuccess, error: onError });
 	}]);
