@@ -37,11 +37,24 @@ angular.module('enlightenApp')
 				pathToLrCat: "",
 				isValid: function()
 				{
-					return this.pathToLrCat;
+					return !!(this.pathToLrCat);
 				},
 				reset: function()
 				{
 					this.pathToLrCat = "";
+				}
+			},
+
+			application:
+			{
+				backendType: "",
+				isValid: function()
+				{
+					return !!(this.backendType);
+				},
+				reset: function()
+				{
+					this.backendType = "";
 				}
 			}
 		}
@@ -56,6 +69,11 @@ angular.module('enlightenApp')
 		var loadLightroomSettings = function()
 		{
 			settings.lightroom.pathToLrCat = localStorage.getItem("lr.pathToLrCat");
+		}
+
+		var loadApplicationSettings = function()
+		{
+			settings.application.backendType = localStorage.getItem("app.backendType");
 		}
 
 		return {
@@ -97,6 +115,21 @@ angular.module('enlightenApp')
 				localStorage.setItem("lr.pathToLrCat", lightroomSettings.pathToLrCat);
 
 				settings.lightroom.reset();
+			},
+
+			setApplicationSettings: function(applicationSettings)
+			{
+				localStorage.setItem("app.backendType", applicationSettings.backendType);
+
+				settings.application.reset();
+			},
+
+			getApplicationSettings: function()
+			{
+				if (!settings.application.isValid())
+					loadApplicationSettings();
+
+				return settings.application;
 			}
 		}
 	});

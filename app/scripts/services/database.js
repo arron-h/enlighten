@@ -12,7 +12,7 @@ angular.module('enlightenApp')
 	{
 		var databaseObjects = {};
 
-		return function(url, callbacks)
+		return function(url, backend, callbacks)
 		{
 			if (typeof callbacks != "object")
 				throw new TypeError("Callbacks must be an object");
@@ -41,30 +41,33 @@ angular.module('enlightenApp')
 					return promiseList;
 				}
 
-				$http.get(url, {responseType: "arraybuffer"})
-					.success(function(response, status)
+				var onSuccess = function(response, status)
+				{
+					if (status == 200)
 					{
-						if (status == 200)
-						{
-							var data = new Uint8Array(response);
-							var db = new SQL.Database(data);
+						var data = new Uint8Array(response);
+						var db = new SQL.Database(data);
 
-							databaseObjects[url].database = db;
+						databaseObjects[url].database = db;
 
-							databaseObjects[url].promises =
-								invokeCallbacks(databaseObjects[url].promises, "success");
-						}
-						else
-						{
-							databaseObjects[url].promises =
-								invokeCallbacks(databaseObjects[url].promises, "error");
-						}
-					})
-					.error(function(response, status)
+						databaseObjects[url].promises =
+							invokeCallbacks(databaseObjects[url].promises, "success");
+					}
+					else
 					{
 						databaseObjects[url].promises =
 							invokeCallbacks(databaseObjects[url].promises, "error");
-					});
+					}
+				};
+
+				var onError = function(response, status)
+				{
+					databaseObjects[url].promises =
+						invokeCallbacks(databaseObjects[url].promises, "error");
+				};
+
+				backend(url, { success: onSuccess,
+						error: onError});
 			}
 			else
 			{
