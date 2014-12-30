@@ -28,6 +28,12 @@ angular.module('enlightenApp')
 						this.accessKey = "";
 						this.secretKey = "";
 						this.region = "";
+					},
+					copyFrom: function(other)
+					{
+						this.accessKey = other.accessKey;
+						this.secretKey = other.secretKey;
+						this.region    = other.region;
 					}
 				}
 			},
@@ -42,6 +48,10 @@ angular.module('enlightenApp')
 				reset: function()
 				{
 					this.pathToLrCat = "";
+				},
+				copyFrom: function(other)
+				{
+					this.pathToLrCat = other.pathToLrCat;
 				}
 			},
 
@@ -55,6 +65,10 @@ angular.module('enlightenApp')
 				reset: function()
 				{
 					this.backendType = "";
+				},
+				copyFrom: function(other)
+				{
+					this.backendType = other.backendType;
 				}
 			}
 		}
@@ -99,7 +113,7 @@ angular.module('enlightenApp')
 				localStorage.setItem("aws.secretKey", awsCredentials.secretKey);
 				localStorage.setItem("aws.region", awsCredentials.region);
 
-				settings.credentials["AWS"].reset();
+				settings.credentials["AWS"].copyFrom(awsCredentials);
 			},
 
 			getLightroomSettings: function()
@@ -113,15 +127,7 @@ angular.module('enlightenApp')
 			setLightroomSettings: function(lightroomSettings)
 			{
 				localStorage.setItem("lr.pathToLrCat", lightroomSettings.pathToLrCat);
-
-				settings.lightroom.reset();
-			},
-
-			setApplicationSettings: function(applicationSettings)
-			{
-				localStorage.setItem("app.backendType", applicationSettings.backendType);
-
-				settings.application.reset();
+				settings.lightroom.copyFrom(lightroomSettings);
 			},
 
 			getApplicationSettings: function()
@@ -130,6 +136,12 @@ angular.module('enlightenApp')
 					loadApplicationSettings();
 
 				return settings.application;
+			},
+
+			setApplicationSettings: function(applicationSettings)
+			{
+				localStorage.setItem("app.backendType", applicationSettings.backendType);
+				settings.application.copyFrom(applicationSettings);
 			}
 		}
 	});
