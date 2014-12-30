@@ -6,30 +6,36 @@ describe('Factory: SqliteDatabase', function()
 	beforeEach(module('enlightenApp'));
 
 	var _SqliteDatabase;
-	var _httpBackend;
-
 	var validDatabases;
 
+	var FakeBackend = function()
+	{
+		return function(url, callbacks)
+		{
+			if (url === "invalidmockdb.sql")
+			{
+				callbacks.error(null, 404);
+			}
+			else
+			{
+				var buffer = new ArrayBuffer(0);
+				callbacks.success(buffer, 200);
+			}
+		}
+	}
+
 	// Initialize the factory and a mock scope
-	beforeEach(inject(function(SqliteDatabase, $httpBackend)
+	beforeEach(inject(function(SqliteDatabase)
 	{
 		_SqliteDatabase = SqliteDatabase;
-		_httpBackend    = $httpBackend;
 	}));
-
-	afterEach(function()
-	{
-		_httpBackend.verifyNoOutstandingExpectation();
-		_httpBackend.verifyNoOutstandingRequest();
-	});
 
 	it('should load a valid database and invoke the given callback', function()
 	{
 		var spy = jasmine.createSpy();
 
-		_httpBackend.expectGET("validmockdb.sql").respond(200);
-		_SqliteDatabase("validmockdb.sql", { success: spy });
-		_httpBackend.flush();
+		var backend = new FakeBackend();
+		_SqliteDatabase("validmockdb.sql", backend, { success: spy });
 
 		expect(spy).toHaveBeenCalled();
 	});
@@ -38,14 +44,19 @@ describe('Factory: SqliteDatabase', function()
 	{
 		var spy = jasmine.createSpy();
 
-		_httpBackend.expectGET("validmockdb.sql").respond(200);
-		_SqliteDatabase("validmockdb.sql", { success: spy });
-		_httpBackend.flush();
+		var spyContainer =
+		{
+			fn: new FakeBackend()
+		}
+		spyOn(spyContainer, "fn").and.callThrough();
+
+		_SqliteDatabase("validmockdb.sql", spyContainer.fn, { success: spy });
 
 		// Make another request for the same db
-		_SqliteDatabase("validmockdb.sql", { success: spy });
+		_SqliteDatabase("validmockdb.sql", spyContainer.fn, { success: spy });
 
 		expect(spy.calls.count()).toEqual(2);
+		expect(spyContainer.fn.calls.count()).toEqual(1);
 	});
 
 	it('should call multiple callbacks when loading a single database', function()
@@ -54,11 +65,10 @@ describe('Factory: SqliteDatabase', function()
 		var spyB = jasmine.createSpy("SpyB");
 		var spyC = jasmine.createSpy("SpyC");
 
-		_httpBackend.expectGET("validmockdb.sql").respond(200);
-		_SqliteDatabase("validmockdb.sql", { success: spyA });
-		_SqliteDatabase("validmockdb.sql", { success: spyB });
-		_SqliteDatabase("validmockdb.sql", { success: spyC });
-		_httpBackend.flush();
+		var backend = new FakeBackend();
+		_SqliteDatabase("validmockdb.sql", backend, { success: spyA });
+		_SqliteDatabase("validmockdb.sql", backend, { success: spyB });
+		_SqliteDatabase("validmockdb.sql", backend, { success: spyC });
 
 		expect(spyA).toHaveBeenCalled();
 		expect(spyB).toHaveBeenCalled();
@@ -70,14 +80,18 @@ describe('Factory: SqliteDatabase', function()
 		var spyA = jasmine.createSpy();
 		var spyB = jasmine.createSpy();
 
-		_httpBackend.expectGET("validmockdb1.sql").respond(200);
-		_httpBackend.expectGET("validmockdb2.sql").respond(200);
-		_SqliteDatabase("validmockdb1.sql", { success: spyA });
-		_SqliteDatabase("validmockdb2.sql", { success: spyB });
-		_httpBackend.flush();
+		var spyContainer =
+		{
+			fn: new FakeBackend()
+		}
+		spyOn(spyContainer, "fn").and.callThrough();
+
+		_SqliteDatabase("validmockdb1.sql", spyContainer.fn, { success: spyA });
+		_SqliteDatabase("validmockdb2.sql", spyContainer.fn, { success: spyB });
 
 		expect(spyA).toHaveBeenCalled();
 		expect(spyB).toHaveBeenCalled();
+		expect(spyContainer.fn.calls.count()).toEqual(2);
 	});
 
 	it('should invoke the error callback when failing to load the given url', function()
@@ -85,9 +99,8 @@ describe('Factory: SqliteDatabase', function()
 		var successSpy = jasmine.createSpy("SuccessSpy");
 		var errorSpy = jasmine.createSpy("ErrorSpy");
 
-		_httpBackend.expectGET("invalidmockdb.sql").respond(404);
-		_SqliteDatabase("invalidmockdb.sql", { success: successSpy, error: errorSpy });
-		_httpBackend.flush();
+		var backend = new FakeBackend();
+		_SqliteDatabase("invalidmockdb.sql", backend, { success: successSpy, error: errorSpy });
 
 		expect(successSpy.calls.count()).toEqual(0);
 		expect(errorSpy.calls.count()).toEqual(1);

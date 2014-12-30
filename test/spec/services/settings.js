@@ -138,4 +138,45 @@ describe('Factory: Settings', function()
 		var settings = _Settings.getLightroomSettings();
 		expect(settings.pathToLrCat).toEqual("/path/b");
 	});
+
+	it('should load application settings from localStorage', function()
+	{
+		spyOn(localStorage, "getItem").and.callFake(function(key)
+		{
+			if (key === "app.backendType") return "HTTP";
+			return null;
+		});
+
+		var settings = _Settings.getApplicationSettings();
+		expect(settings.backendType).toEqual("HTTP");
+	});
+
+	it('should save application settings to localStorage', function()
+	{
+		var backendType;
+		spyOn(localStorage, "setItem").and.callFake(function(key, value)
+		{
+			if (key === "app.backendType") backendType = value;
+		});
+
+		_Settings.setApplicationSettings({
+			backendType: "AWS"
+		});
+
+		expect(backendType).toEqual("AWS");
+	});
+
+	it('should keep local application settings object up to date with multiple saves', function()
+	{
+		_Settings.setApplicationSettings({
+			backendType: "HTTP",
+		});
+
+		_Settings.setApplicationSettings({
+			backendType: "AWS",
+		});
+
+		var settings = _Settings.getApplicationSettings();
+		expect(settings.backendType).toEqual("AWS");
+	});
 });

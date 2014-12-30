@@ -9,8 +9,23 @@
  */
 angular.module('enlightenApp')
 	.controller('MainCtrl',
-		['$scope', '$location', 'SqliteDatabase', 'Evented', 'FilterFactory', 'Settings',
-			function ($scope, $location, SqliteDatabase, Evented, FilterFactory, Settings)
+		[
+			'$scope',
+			'$location',
+			'SqliteDatabase',
+			'Evented',
+			'FilterFactory',
+			'Settings',
+			'BackendFactory',
+			function (
+				$scope,
+				$location,
+				SqliteDatabase,
+				Evented,
+				FilterFactory,
+				Settings,
+				BackendFactory
+				)
 	{
 		$scope.files       = [];
 		$scope.loadingData = false;
@@ -80,7 +95,12 @@ angular.module('enlightenApp')
 		}
 		else
 		{
-			SqliteDatabase(Settings.getLightoomSettings().pathToLrCat, { success: onSuccess, error: onError });
+			var backendType = Settings.getApplicationSettings().backendType;
+			var backend     = BackendFactory(backendType);
+
+			SqliteDatabase(Settings.getLightoomSettings().pathToLrCat,
+				backend, { success: onSuccess, error: onError });
+
 			Evented.register("FilterChanged", onFilterChanged);
 		}
 	}])
