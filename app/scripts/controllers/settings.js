@@ -11,27 +11,37 @@ angular.module('enlightenApp')
 		['$scope', 'Settings',
 			function ($scope, Settings)
 	{
-		$scope.save = function(credentials, lr)
+		$scope.save = function(credentials, lr, app)
 		{
-			if (!credentials.accessKey || !credentials.secretKey ||
-			   !credentials.region)
+			if (app.backendType === "AWS")
 			{
-				throw new Exception("Missing values from object!");
+				if (!credentials.accessKey || !credentials.secretKey ||
+				   !credentials.region)
+				{
+					throw new ReferenceError("Missing values from object!");
+				}
 			}
 
 			if (!lr.pathToLrCat)
-				throw new Exception("Missing values from object!");
+				throw new ReferenceError("Missing values from object!");
+
+			if (!app.backendType)
+				throw new ReferenceError("Missing values from object!");
 
 			Settings.setAWSCredentials(credentials);
 			Settings.setLightroomSettings(lr);
+			Settings.setApplicationSettings(app);
 
 			$scope.credentials = credentials;
 			$scope.lr          = lr;
+			$scope.app         = app;
 		}
 
 		var credentials = Settings.getAWSCredentials();
 		var lrSettings  = Settings.getLightroomSettings();
+		var appSettings = Settings.getApplicationSettings();
 
 		$scope.credentials = credentials;
 		$scope.lr = lrSettings;
+		$scope.app = appSettings;
 	}]);

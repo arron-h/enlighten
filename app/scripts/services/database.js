@@ -66,7 +66,7 @@ angular.module('enlightenApp')
 						invokeCallbacks(databaseObjects[url].promises, "error");
 				};
 
-				backend(url, { success: onSuccess,
+				backend.get(url, { success: onSuccess,
 						error: onError});
 			}
 			else

@@ -10,16 +10,23 @@ describe('Factory: SqliteDatabase', function()
 
 	var FakeBackend = function()
 	{
-		return function(url, callbacks)
-		{
-			if (url === "invalidmockdb.sql")
+		return {
+			get: function(url, callbacks)
 			{
-				callbacks.error(null, 404);
-			}
-			else
+				if (url === "invalidmockdb.sql")
+				{
+					callbacks.error(null, 404);
+				}
+				else
+				{
+					var buffer = new ArrayBuffer(0);
+					callbacks.success(buffer, 200);
+				}
+			},
+
+			type: function()
 			{
-				var buffer = new ArrayBuffer(0);
-				callbacks.success(buffer, 200);
+				return "Fake";
 			}
 		}
 	}
@@ -44,19 +51,16 @@ describe('Factory: SqliteDatabase', function()
 	{
 		var spy = jasmine.createSpy();
 
-		var spyContainer =
-		{
-			fn: new FakeBackend()
-		}
-		spyOn(spyContainer, "fn").and.callThrough();
+		var backend = new FakeBackend();
+		spyOn(backend, "get").and.callThrough();
 
-		_SqliteDatabase("validmockdb.sql", spyContainer.fn, { success: spy });
+		_SqliteDatabase("validmockdb.sql", backend, { success: spy });
 
 		// Make another request for the same db
-		_SqliteDatabase("validmockdb.sql", spyContainer.fn, { success: spy });
+		_SqliteDatabase("validmockdb.sql", backend, { success: spy });
 
 		expect(spy.calls.count()).toEqual(2);
-		expect(spyContainer.fn.calls.count()).toEqual(1);
+		expect(backend.get.calls.count()).toEqual(1);
 	});
 
 	it('should call multiple callbacks when loading a single database', function()
@@ -80,18 +84,15 @@ describe('Factory: SqliteDatabase', function()
 		var spyA = jasmine.createSpy();
 		var spyB = jasmine.createSpy();
 
-		var spyContainer =
-		{
-			fn: new FakeBackend()
-		}
-		spyOn(spyContainer, "fn").and.callThrough();
+		var backend = new FakeBackend();
+		spyOn(backend, "get").and.callThrough();
 
-		_SqliteDatabase("validmockdb1.sql", spyContainer.fn, { success: spyA });
-		_SqliteDatabase("validmockdb2.sql", spyContainer.fn, { success: spyB });
+		_SqliteDatabase("validmockdb1.sql", backend, { success: spyA });
+		_SqliteDatabase("validmockdb2.sql", backend, { success: spyB });
 
 		expect(spyA).toHaveBeenCalled();
 		expect(spyB).toHaveBeenCalled();
-		expect(spyContainer.fn.calls.count()).toEqual(2);
+		expect(backend.get.calls.count()).toEqual(2);
 	});
 
 	it('should invoke the error callback when failing to load the given url', function()

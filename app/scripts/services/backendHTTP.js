@@ -32,4 +32,8 @@ angular.module('enlightenApp')
 		{
 			return "HTTP";
 		};
+
+		this.updateScope = function()
+		{
+		};
 	}]);

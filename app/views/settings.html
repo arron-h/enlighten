@@ -6,38 +6,46 @@
 	not stored/sent anywhere else.
 	</p>
 	<form class="form-horizontal">
-	  <h4>Amazon AWS</h4>
-	  <div class="form-group">
-		<label for="inputAccessKey" class="col-sm-2 control-label">Access Key</label>
-		<div class="col-sm-6">
-		  <input type="text" class="form-control" ng-model="credentials.accessKey">
+		<h4>General</h4>
+		<div class="form-group">
+			<label for="inputAccessKey" class="col-sm-2 control-label">Connection Method</label>
+			<div class="col-sm-6 checkbox">
+				<input type="radio" ng-model="app.backendType" value="AWS"> I want to use Amazon S3 <br />
+				<input type="radio" ng-model="app.backendType" value="HTTP"> I want to use my own server
+			</div>
 		</div>
-	  </div>
-	  <div class="form-group">
-		<label for="inputSecretKey" class="col-sm-2 control-label">Secret Key</label>
-		<div class="col-sm-6">
-		  <input type="password" class="form-control" ng-model="credentials.secretKey">
+		
+		<h4>Amazon AWS</h4>
+		<div class="form-group">
+			<label for="inputAccessKey" class="col-sm-2 control-label">Access Key</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" ng-model="credentials.accessKey">
+			</div>
 		</div>
-	  </div>
-	  <div class="form-group">
-		<label for="inputRegion" class="col-sm-2 control-label">Region</label>
-		<div class="col-sm-6">
-		  <input type="text" class="form-control" ng-model="credentials.region">
+		<div class="form-group">
+			<label for="inputSecretKey" class="col-sm-2 control-label">Secret Key</label>
+			<div class="col-sm-6">
+				<input type="password" class="form-control" ng-model="credentials.secretKey">
+			</div>
 		</div>
-	  </div>
+		<div class="form-group">
+			<label for="inputRegion" class="col-sm-2 control-label">Region</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" ng-model="credentials.region">
+			</div>
+		</div>
 
-	  <h4>Adobe Lightroom</h4>
-
-	  <div class="form-group">
-		<label for="inputCatalog" class="col-sm-2 control-label">Lightroom Catalog Location</label>
-		<div class="col-sm-6">
-		  <input type="text" class="form-control" ng-model="lr.pathToLrCat" placeholder="/path/to/Catalog.lrcat">
+		<h4>Adobe Lightroom</h4>
+		<div class="form-group">
+			<label for="inputCatalog" class="col-sm-2 control-label">Lightroom Catalog Location</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" ng-model="lr.pathToLrCat" placeholder="/path/to/Catalog.lrcat">
+			</div>
 		</div>
-	  </div>
-	  <div class="form-group">
-		<div class="col-sm-offset-2 col-sm-6">
-		  <button type="submit" ng-click="save(credentials, lr)" class="btn btn-default">Save</button>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-6">
+				<button type="submit" ng-click="save(credentials, lr, app)" class="btn btn-default">Save</button>
+			</div>
 		</div>
-	  </div>
 	</form>
 </div>
