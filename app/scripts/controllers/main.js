@@ -33,6 +33,17 @@ angular.module('enlightenApp')
 		var db             = null;
 		var currentFilter  = null;
 
+		var backendType = Settings.getApplicationSettings().backendType;
+		var backend     = null;
+		if (backendType)
+		{
+			backend = BackendFactory(backendType);
+		}
+		else
+		{
+			$location.url("/settings");
+		}
+
 		var loadContent = function(filter)
 		{
 			$scope.loadingData = true;
@@ -67,11 +78,14 @@ angular.module('enlightenApp')
 
 			var filter = FilterFactory.defaultFilter();
 			onFilterChanged(filter);
+
+			backend.updateScope($scope);
 		}
 
 		var onError = function()
 		{
 			$scope.hasError = true;
+			backend.updateScope($scope);
 		}
 
 		$scope.onLoadMoreContent = function()
@@ -88,26 +102,28 @@ angular.module('enlightenApp')
 			loadContent(filter);
 		}
 
-		// First check that the AWS options have been set
-		if (!Settings.hasCredentials())
-		{
-			$location.url("/settings");
-		}
-		else
-		{
-			var backendType = Settings.getApplicationSettings().backendType;
-			var backend     = BackendFactory(backendType);
+		SqliteDatabase(Settings.getLightroomSettings().pathToLrCat,
+			backend, { success: onSuccess, error: onError });
 
-			SqliteDatabase(Settings.getLightoomSettings().pathToLrCat,
-				backend, { success: onSuccess, error: onError });
-
-			Evented.register("FilterChanged", onFilterChanged);
-		}
+		Evented.register("FilterChanged", onFilterChanged);
 	}])
 
 	.controller('PathsCtrl',
-		['$scope', 'SqliteDatabase', 'Evented', 'FilterFactory',
-			function ($scope, SqliteDatabase, Evented, FilterFactory)
+		[
+			'$scope',
+			'SqliteDatabase',
+			'Evented',
+			'FilterFactory',
+			'Settings',
+			'BackendFactory',
+			function(
+				$scope,
+				SqliteDatabase,
+				Evented,
+				FilterFactory,
+				Settings,
+				BackendFactory
+			)
 	{
 		$scope.folderModel = [];
 		$scope.folderTreeOptions = {
@@ -155,6 +171,8 @@ angular.module('enlightenApp')
 					itemCount: 0
 				});
 			}
+
+			backend.updateScope($scope);
 		}
 
 		var onError = function()
@@ -169,5 +187,13 @@ angular.module('enlightenApp')
 			Evented.emit("FilterChanged", [folderFilter]);
 		}
 
-		SqliteDatabase(Settings.getLightoomSettings().pathToLrCat, { success: onSuccess, error: onError });
+		var backendType = Settings.getApplicationSettings().backendType;
+
+		if (backendType)
+		{
+			var backend     = BackendFactory(backendType);
+
+			SqliteDatabase(Settings.getLightroomSettings().pathToLrCat,
+				backend, { success: onSuccess, error: onError });
+		}
 	}]);
