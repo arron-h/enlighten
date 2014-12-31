@@ -1,5 +1,6 @@
 'use strict';
 
+
 describe('Factory: Settings', function()
 {
 	// load the controller's module
@@ -12,6 +13,31 @@ describe('Factory: Settings', function()
 	{
 		_Settings = Settings;
 	}));
+
+	// Fix for firefox - http://twofuckingdevelopers.com/2014/07/solving-spyon-problems-in-jasmine/
+	if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
+	{
+		var mock = (function()
+		{
+			var store = {};
+			return {
+				getItem: function(key)
+				{
+					return store[key];
+				},
+				setItem: function(key, value)
+				{
+					store[key] = value.toString();
+				},
+				clear: function()
+				{
+					store = {};
+				}
+			};
+		})();
+
+		Object.defineProperty(window, 'localStorage', { value: mock, configurable: true, enumerable: true, writable: true });
+	}
 
 	describe('hasCredentials()', function()
 	{
