@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-describe('Controller: MainCtrl', function()
+describe("Controller: MainCtrl", function()
 {
-	// load the controller's module
-	beforeEach(module('enlightenApp'));
+	// load the controller"s module
+	beforeEach(module("enlightenApp"));
 
 	var MainCtrl,
 	scope;
@@ -12,7 +12,7 @@ describe('Controller: MainCtrl', function()
 	beforeEach(inject(function ($controller, $rootScope)
 	{
 		scope = $rootScope.$new();
-	    MainCtrl = $controller('MainCtrl',
+	    MainCtrl = $controller("MainCtrl",
 		{
 			$scope: scope
 		});
