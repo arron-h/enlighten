@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc overview
@@ -9,36 +9,36 @@
  * Main module of the application.
  */
 angular
-	.module('enlightenApp',
+	.module("enlightenApp",
 	[
-		'ngAnimate',
-		'ngCookies',
-		'ngResource',
-		'ngRoute',
-		'ngSanitize',
-		'ngTouch',
-		'angular.filter',
-		'treeControl',
-		'infinite-scroll'
+		"ngAnimate",
+		"ngCookies",
+		"ngResource",
+		"ngRoute",
+		"ngSanitize",
+		"ngTouch",
+		"angular.filter",
+		"treeControl",
+		"infinite-scroll"
 	])
 	.config(
 	[
-		'$routeProvider',
+		"$routeProvider",
 		function(
 			$routeProvider
 		)
 	{
 		$routeProvider
-		.when('/',
+		.when("/",
 		{
-			templateUrl: 'views/main.html'
+			templateUrl: "views/main.html"
 		})
-		.when('/settings',
+		.when("/settings",
 		{
-			templateUrl: 'views/settings.html'
+			templateUrl: "views/settings.html"
 		})
 		.otherwise(
 		{
-			redirectTo: '/'
+			redirectTo: "/"
 		});
 	}]);

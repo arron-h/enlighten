@@ -38,6 +38,6 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start test/karma.conf.js --single-run --browsers Firefox"
+    "test": "./node_modules/karma/bin/karma start test/karma.conf.js --single-run --browsers Firefox; grunt jshint"
   }
 }

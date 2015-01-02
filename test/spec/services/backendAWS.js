@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-describe('Service: BackendAWS', function()
+describe("Service: BackendAWS", function()
 {
-	// Load the controller's module
-	beforeEach(module('enlightenApp'));
+	// Load the controller"s module
+	beforeEach(module("enlightenApp"));
 
 	// Mocked values
 	var fakeGoodData = new ArrayBuffer(32);
@@ -22,17 +22,17 @@ describe('Service: BackendAWS', function()
 	{
 		var FakeS3Request = function(params)
 		{
-			var callbacks = {}
+			var callbacks = {};
 			this.on = function(action, callback)
 			{
 				callbacks[action] = callback;
-			}
+			};
 
 			this.send = function()
 			{
 				if (params.Key === fakeGoodKey)
 				{
-					callbacks['success'].call(null,
+					callbacks.success.call(null,
 					{
 						httpResponse: { statusCode: 200 },
 						data: { Body: fakeGoodData }
@@ -40,13 +40,13 @@ describe('Service: BackendAWS', function()
 				}
 				else
 				{
-					callbacks['error'].call(null,
+					callbacks.error.call(null,
 					{
 						httpResponse: { statusCode: 404 },
 						data: null
 					});
 				}
-			}
+			};
 		};
 
 		FakeS3Service =
@@ -55,7 +55,7 @@ describe('Service: BackendAWS', function()
 			{
 				return new FakeS3Request(params);
 			}
-		}
+		};
 
 		spyOn(FakeS3Service, "getObject").and.callThrough();
 		spyOn(AWS, "S3").and.callFake(function()
@@ -71,17 +71,17 @@ describe('Service: BackendAWS', function()
 		_Settings   = Settings;
 	}));
 
-	it('should return AWS when type() is called', function()
+	it("should return AWS when type() is called", function()
 	{
 		expect(_BackendAWS.type()).toEqual("AWS");
 	});
 
-	it('should update the Angular scope when updateScope() is called', function()
+	it("should update the Angular scope when updateScope() is called", function()
 	{
 		var scope =
 		{
 			$apply: function() {}
-		}
+		};
 		spyOn(scope, "$apply");
 
 		_BackendAWS.updateScope(scope);
@@ -89,9 +89,9 @@ describe('Service: BackendAWS', function()
 		expect(scope.$apply).toHaveBeenCalled();
 	});
 
-	describe('Function: get()', function()
+	describe("Function: get()", function()
 	{
-		it('correctly configures the AWS config', function()
+		it("correctly configures the AWS config", function()
 		{
 			spyOn(AWS.config, "update");
 
@@ -112,7 +112,7 @@ describe('Service: BackendAWS', function()
 			expect(AWS.config.region).toEqual("eu-west");
 		});
 
-		it('makes a request for the given URL', function()
+		it("makes a request for the given URL", function()
 		{
 			_BackendAWS.get("some/key", {});
 			expect(FakeS3Service.getObject).toHaveBeenCalledWith(
@@ -122,7 +122,7 @@ describe('Service: BackendAWS', function()
 			});
 		});
 
-		it('calls the \'success\' callback when the request is successful', function()
+		it("calls the \"success\" callback when the request is successful", function()
 		{
 			var spy = jasmine.createSpy();
 
@@ -131,7 +131,7 @@ describe('Service: BackendAWS', function()
 			expect(spy).toHaveBeenCalledWith(fakeGoodData, 200);
 		});
 
-		it('calls the \'error\' callback when the request is unsuccessful', function()
+		it("calls the \"error\" callback when the request is unsuccessful", function()
 		{
 			var spy = jasmine.createSpy();
 

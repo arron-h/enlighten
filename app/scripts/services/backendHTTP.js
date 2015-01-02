@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,8 +7,8 @@
  * # BackendHTTP
  * A HTTP backend implementation
  */
-angular.module('enlightenApp')
-	.service('BackendHTTP',
+angular.module("enlightenApp")
+	.service("BackendHTTP",
 		[
 			"$http",
 			function(
