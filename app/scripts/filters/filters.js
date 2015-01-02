@@ -21,12 +21,17 @@ angular.module('enlightenApp')
 				{
 					return db.exec("SELECT originalFilename FROM AgLibraryFile " +
 						"LIMIT " + upperBound + " OFFSET " + offset);
-				}
+				};
 
 				this.increaseRange = function()
 				{
 					offset += 100;
-				}
+				};
+
+				this.filterName = function()
+				{
+					return "Limit100";
+				};
 			},
 
 			"FolderFilter": function()
@@ -66,12 +71,17 @@ angular.module('enlightenApp')
 						"LIMIT " + upperBound + " OFFSET " + offset;
 
 					return db.exec(query);
-				}
+				};
 
 				this.increaseRange = function()
 				{
 					offset += 100;
-				}
+				};
+
+				this.filterName = function()
+				{
+					return "FolderFilter";
+				};
 
 				this.folderIndex  = 0;
 				this.folderIsRoot = false;

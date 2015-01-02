@@ -15,8 +15,9 @@ angular.module('enlightenApp')
 				Settings
 			)
 	{
-		this.requests = {};
+		this.requests     = {};
 		this.requestCount = 0;
+		this.s3Service    = new AWS.S3();
 
 		this.get = function(url, callbacks)
 		{
@@ -33,7 +34,7 @@ angular.module('enlightenApp')
 			AWS.config.region = credentials.region;
 
 			// Create the AWS.Request object
-			var request = new AWS.S3().getObject(
+			var request = this.s3Service.getObject(
 			{
 				Bucket: 'arronh.dev.test',
 				Key: url
@@ -45,16 +46,24 @@ angular.module('enlightenApp')
 			{
 				var status = response.httpResponse.statusCode;
 				var data   = response.data.Body;
-				callbacks.success(data, status)
+
+				if (typeof callbacks.success === "function")
+					callbacks.success(data, status)
 
 				delete that.requests[requestId];
 			});
 
 			request.on('error', function(response)
 			{
-				var status = response.httpResponse.statusCode;
-				var data   = response.data.Body;
-				callbacks.error(data, status)
+				var status = 0;
+				var data   = null;
+				if (response.httpResponse)
+					status = response.httpResponse.statusCode;
+				if (response.data)
+					data   = response.data.Body;
+
+				if (typeof callbacks.error === "function")
+					callbacks.error(data, status)
 
 				delete that.requests[requestId];
 			});
