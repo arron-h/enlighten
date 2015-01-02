@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-describe('Factory: Evented', function()
+describe("Factory: Evented", function()
 {
-	// load the controller's module
-	beforeEach(module('enlightenApp'));
+	// load the controller"s module
+	beforeEach(module("enlightenApp"));
 
 	var _Evented;
 
@@ -13,7 +13,7 @@ describe('Factory: Evented', function()
 		_Evented = Evented;
 	}));
 
-	it('should call a single listener for a given event type', function()
+	it("should call a single listener for a given event type", function()
 	{
 		var spy = jasmine.createSpy();
 
@@ -23,7 +23,7 @@ describe('Factory: Evented', function()
 		expect(spy.calls.count()).toEqual(1);
 	});
 
-	it('should call n number of listeners for a given event type', function()
+	it("should call n number of listeners for a given event type", function()
 	{
 		var spyA = jasmine.createSpy();
 		var spyB = jasmine.createSpy();
@@ -40,7 +40,7 @@ describe('Factory: Evented', function()
 		expect(spyC.calls.count()).toEqual(1);
 	});
 
-	it('should call a listener with an expanded argument array', function()
+	it("should call a listener with an expanded argument array", function()
 	{
 		var spy = jasmine.createSpy();
 

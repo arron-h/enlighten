@@ -1,12 +1,11 @@
-'use strict';
+"use strict";
 
-describe('Factory: SqliteDatabase', function()
+describe("Factory: SqliteDatabase", function()
 {
-	// load the controller's module
-	beforeEach(module('enlightenApp'));
+	// load the controller"s module
+	beforeEach(module("enlightenApp"));
 
 	var _SqliteDatabase;
-	var validDatabases;
 
 	var FakeBackend = function()
 	{
@@ -28,8 +27,8 @@ describe('Factory: SqliteDatabase', function()
 			{
 				return "Fake";
 			}
-		}
-	}
+		};
+	};
 
 	// Initialize the factory and a mock scope
 	beforeEach(inject(function(SqliteDatabase)
@@ -37,7 +36,7 @@ describe('Factory: SqliteDatabase', function()
 		_SqliteDatabase = SqliteDatabase;
 	}));
 
-	it('should load a valid database and invoke the given callback', function()
+	it("should load a valid database and invoke the given callback", function()
 	{
 		var spy = jasmine.createSpy();
 
@@ -47,7 +46,7 @@ describe('Factory: SqliteDatabase', function()
 		expect(spy).toHaveBeenCalled();
 	});
 
-	it('should only load one instance of a database for a given url', function()
+	it("should only load one instance of a database for a given url", function()
 	{
 		var spy = jasmine.createSpy();
 
@@ -63,7 +62,7 @@ describe('Factory: SqliteDatabase', function()
 		expect(backend.get.calls.count()).toEqual(1);
 	});
 
-	it('should call multiple callbacks when loading a single database', function()
+	it("should call multiple callbacks when loading a single database", function()
 	{
 		var spyA = jasmine.createSpy("SpyA");
 		var spyB = jasmine.createSpy("SpyB");
@@ -79,7 +78,7 @@ describe('Factory: SqliteDatabase', function()
 		expect(spyC).toHaveBeenCalled();
 	});
 
-	it('should load multiple databases for multiple urls', function()
+	it("should load multiple databases for multiple urls", function()
 	{
 		var spyA = jasmine.createSpy();
 		var spyB = jasmine.createSpy();
@@ -95,7 +94,7 @@ describe('Factory: SqliteDatabase', function()
 		expect(backend.get.calls.count()).toEqual(2);
 	});
 
-	it('should invoke the error callback when failing to load the given url', function()
+	it("should invoke the error callback when failing to load the given url", function()
 	{
 		var successSpy = jasmine.createSpy("SuccessSpy");
 		var errorSpy = jasmine.createSpy("ErrorSpy");

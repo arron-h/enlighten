@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,10 +7,10 @@
  * # BackendAWS
  * An AWS backend implementation
  */
-angular.module('enlightenApp')
-	.service('BackendAWS',
+angular.module("enlightenApp")
+	.service("BackendAWS",
 		[
-			'Settings',
+			"Settings",
 			function(
 				Settings
 			)
@@ -36,34 +36,42 @@ angular.module('enlightenApp')
 			// Create the AWS.Request object
 			var request = this.s3Service.getObject(
 			{
-				Bucket: 'arronh.dev.test',
+				Bucket: "arronh.dev.test",
 				Key: url
 			});
 
 			// Register a callback to report on the data
 			var that = this;
-			request.on('success', function(response)
+			request.on("success", function(response)
 			{
 				var status = response.httpResponse.statusCode;
 				var data   = response.data.Body;
 
 				if (typeof callbacks.success === "function")
-					callbacks.success(data, status)
+				{
+					callbacks.success(data, status);
+				}
 
 				delete that.requests[requestId];
 			});
 
-			request.on('error', function(response)
+			request.on("error", function(response)
 			{
 				var status = 0;
 				var data   = null;
 				if (response.httpResponse)
+				{
 					status = response.httpResponse.statusCode;
+				}
 				if (response.data)
+				{
 					data   = response.data.Body;
+				}
 
 				if (typeof callbacks.error === "function")
-					callbacks.error(data, status)
+				{
+					callbacks.error(data, status);
+				}
 
 				delete that.requests[requestId];
 			});

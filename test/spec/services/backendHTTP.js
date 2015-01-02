@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-describe('Service: BackendHTTP', function()
+describe("Service: BackendHTTP", function()
 {
-	// load the controller's module
-	beforeEach(module('enlightenApp'));
+	// load the controller"s module
+	beforeEach(module("enlightenApp"));
 
 	var _BackendHTTP;
 	var _HttpBackend;
@@ -21,12 +21,12 @@ describe('Service: BackendHTTP', function()
 		_HttpBackend.verifyNoOutstandingRequest();
 	});
 
-	it('should return HTTP when type() is called', function()
+	it("should return HTTP when type() is called", function()
 	{
 		expect(_BackendHTTP.type()).toEqual("HTTP");
 	});
 
-	it('should invoke the success callback on HTTP success', function()
+	it("should invoke the success callback on HTTP success", function()
 	{
 		var spy = jasmine.createSpy();
 		var urlEndpoint = "http://someurl.com/api";
@@ -38,7 +38,7 @@ describe('Service: BackendHTTP', function()
 		expect(spy).toHaveBeenCalledWith(undefined, 200);
 	});
 
-	it('should invoke the error callback on HTTP error', function()
+	it("should invoke the error callback on HTTP error", function()
 	{
 		var spy = jasmine.createSpy();
 		var urlEndpoint = "http://someurl.com/api";

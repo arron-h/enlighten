@@ -7,17 +7,19 @@
   "curly": true,
   "eqeqeq": true,
   "immed": true,
-  "indent": 2,
+  "indent": 4,
   "latedef": true,
   "newcap": true,
   "noarg": true,
-  "quotmark": "single",
+  "quotmark": "double",
   "undef": true,
   "unused": true,
   "strict": true,
   "trailing": true,
   "smarttabs": true,
   "globals": {
-    "angular": false
+    "angular": false,
+	"AWS": true,
+	"SQL": true
   }
 }

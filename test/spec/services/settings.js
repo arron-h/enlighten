@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
 
-describe('Factory: Settings', function()
+describe("Factory: Settings", function()
 {
-	// load the controller's module
-	beforeEach(module('enlightenApp'));
+	// load the controller"s module
+	beforeEach(module("enlightenApp"));
 
 	var _Settings;
 
@@ -15,7 +15,7 @@ describe('Factory: Settings', function()
 	}));
 
 	// Fix for firefox - http://twofuckingdevelopers.com/2014/07/solving-spyon-problems-in-jasmine/
-	if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
+	if (navigator.userAgent.toLowerCase().indexOf("firefox") > -1)
 	{
 		var mock = (function()
 		{
@@ -36,12 +36,12 @@ describe('Factory: Settings', function()
 			};
 		})();
 
-		Object.defineProperty(window, 'localStorage', { value: mock, configurable: true, enumerable: true, writable: true });
+		Object.defineProperty(window, "localStorage", { value: mock, configurable: true, enumerable: true, writable: true });
 	}
 
-	describe('hasCredentials()', function()
+	describe("hasCredentials()", function()
 	{
-		it('should return false if no credentials exist', function()
+		it("should return false if no credentials exist", function()
 		{
 			spyOn(localStorage, "getItem").and.callFake(function()
 			{
@@ -51,13 +51,22 @@ describe('Factory: Settings', function()
 			expect(_Settings.hasCredentials()).toBe(false);
 		});
 
-		it('should return true if credentials exist', function()
+		it("should return true if credentials exist", function()
 		{
 			spyOn(localStorage, "getItem").and.callFake(function(key)
 			{
-				if (key === "aws.accessKey") return "1234";
-				else if (key === "aws.secretKey") return "5678";
-				else if (key === "aws.region") return "eu-west";
+				if (key === "aws.accessKey")
+				{
+					return "1234";
+				}
+				else if (key === "aws.secretKey")
+				{
+					return "5678";
+				}
+				else if (key === "aws.region")
+				{
+					return "eu-west";
+				}
 
 				return null;
 			});
@@ -66,13 +75,22 @@ describe('Factory: Settings', function()
 		});
 	});
 
-	it('should load AWS credentials from localStorage', function()
+	it("should load AWS credentials from localStorage", function()
 	{
 		spyOn(localStorage, "getItem").and.callFake(function(key)
 		{
-			if (key === "aws.accessKey") return "1234";
-			else if (key === "aws.secretKey") return "5678";
-			else if (key === "aws.region") return "eu-west";
+			if (key === "aws.accessKey")
+			{
+				return "1234";
+			}
+			else if (key === "aws.secretKey")
+			{
+				return "5678";
+			}
+			else if (key === "aws.region")
+			{
+				return "eu-west";
+			}
 
 			return null;
 		});
@@ -83,14 +101,23 @@ describe('Factory: Settings', function()
 		expect(credentials.region).toEqual("eu-west");
 	});
 
-	it('should save AWS credentials to localStorage', function()
+	it("should save AWS credentials to localStorage", function()
 	{
 		var accessKey, secretKey, region;
 		spyOn(localStorage, "setItem").and.callFake(function(key, value)
 		{
-			if (key === "aws.accessKey")      accessKey = value;
-			else if (key === "aws.secretKey") secretKey = value;
-			else if (key === "aws.region")    region = value;
+			if (key === "aws.accessKey")
+			{
+				accessKey = value;
+			}
+			else if (key === "aws.secretKey")
+			{
+				secretKey = value;
+			}
+			else if (key === "aws.region")
+			{
+				region = value;
+			}
 		});
 
 		_Settings.setAWSCredentials({
@@ -104,7 +131,7 @@ describe('Factory: Settings', function()
 		expect(region).toEqual("us-east");
 	});
 
-	it('should keep local AWS object up to date with multiple saves', function()
+	it("should keep local AWS object up to date with multiple saves", function()
 	{
 		_Settings.setAWSCredentials({
 			accessKey: "AYUDEF7868332",
@@ -124,11 +151,15 @@ describe('Factory: Settings', function()
 		expect(credentials.region).toEqual("us-west");
 	});
 
-	it('should load lightroom settings from localStorage', function()
+	it("should load lightroom settings from localStorage", function()
 	{
 		spyOn(localStorage, "getItem").and.callFake(function(key)
 		{
-			if (key === "lr.pathToLrCat") return "/my/fake/path.lrcat";
+			if (key === "lr.pathToLrCat")
+			{
+				return "/my/fake/path.lrcat";
+			}
+
 			return null;
 		});
 
@@ -136,12 +167,15 @@ describe('Factory: Settings', function()
 		expect(settings.pathToLrCat).toEqual("/my/fake/path.lrcat");
 	});
 
-	it('should save lightroom settings to localStorage', function()
+	it("should save lightroom settings to localStorage", function()
 	{
 		var pathToLrCat;
 		spyOn(localStorage, "setItem").and.callFake(function(key, value)
 		{
-			if (key === "lr.pathToLrCat") pathToLrCat = value;
+			if (key === "lr.pathToLrCat")
+			{
+				pathToLrCat = value;
+			}
 		});
 
 		_Settings.setLightroomSettings({
@@ -151,7 +185,7 @@ describe('Factory: Settings', function()
 		expect(pathToLrCat).toEqual("/my/cool/path.lrcat");
 	});
 
-	it('should keep local lightroom settings object up to date with multiple saves', function()
+	it("should keep local lightroom settings object up to date with multiple saves", function()
 	{
 		_Settings.setLightroomSettings({
 			pathToLrCat: "/path/a",
@@ -165,11 +199,15 @@ describe('Factory: Settings', function()
 		expect(settings.pathToLrCat).toEqual("/path/b");
 	});
 
-	it('should load application settings from localStorage', function()
+	it("should load application settings from localStorage", function()
 	{
 		spyOn(localStorage, "getItem").and.callFake(function(key)
 		{
-			if (key === "app.backendType") return "HTTP";
+			if (key === "app.backendType")
+			{
+				return "HTTP";
+			}
+
 			return null;
 		});
 
@@ -177,12 +215,15 @@ describe('Factory: Settings', function()
 		expect(settings.backendType).toEqual("HTTP");
 	});
 
-	it('should save application settings to localStorage', function()
+	it("should save application settings to localStorage", function()
 	{
 		var backendType;
 		spyOn(localStorage, "setItem").and.callFake(function(key, value)
 		{
-			if (key === "app.backendType") backendType = value;
+			if (key === "app.backendType")
+			{
+				backendType = value;
+			}
 		});
 
 		_Settings.setApplicationSettings({
@@ -192,7 +233,7 @@ describe('Factory: Settings', function()
 		expect(backendType).toEqual("AWS");
 	});
 
-	it('should keep local application settings object up to date with multiple saves', function()
+	it("should keep local application settings object up to date with multiple saves", function()
 	{
 		_Settings.setApplicationSettings({
 			backendType: "HTTP",

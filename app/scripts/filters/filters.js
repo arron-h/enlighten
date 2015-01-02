@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,8 +7,8 @@
  * # FilterFactory
  * Filters which can be used
  */
-angular.module('enlightenApp')
-	.factory('FilterFactory', function()
+angular.module("enlightenApp")
+	.factory("FilterFactory", function()
 	{
 		var filters =
 		{
@@ -46,20 +46,23 @@ angular.module('enlightenApp')
 
 					if (this.folderIsRoot)
 					{
-						query = "SELECT id_local FROM AgLibraryFolder WHERE " +
+						var idColumn = "id_local";
+						query = "SELECT " + idColumn + " FROM AgLibraryFolder WHERE " +
 							"rootFolder=" + this.folderIndex.toString();
 
 						indices = "";
-						var folders = db.each(query,
-						function(row)
-						{
-							indices += row.id_local + ",";
-						},
-						function()
-						{
-							if (indices.length > 0)
-								indices = indices.slice(0, indices.length - 1);
-						});
+						db.each(query,
+							function(row)
+							{
+								indices += row[idColumn] + ",";
+							},
+							function()
+							{
+								if (indices.length > 0)
+								{
+									indices = indices.slice(0, indices.length - 1);
+								}
+							});
 					}
 					else
 					{
@@ -91,12 +94,12 @@ angular.module('enlightenApp')
 		return {
 			defaultFilter: function()
 			{
-				return new filters["Limit100"];
+				return new filters.Limit100();
 			},
 
 			getFilter: function(filterName)
 			{
-				return new filters[filterName];
+				return new filters[filterName]();
 			}
-		}
+		};
 	});
