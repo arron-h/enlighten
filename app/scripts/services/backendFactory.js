@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -6,13 +6,13 @@
  * @description
  * # BackendFactory
  * The backend provider for data.  There are several backend choices including
- * HTTP and Amazon S3 ('AWS').
+ * HTTP and Amazon S3 ("AWS").
  */
-angular.module('enlightenApp')
-	.factory('BackendFactory',
+angular.module("enlightenApp")
+	.factory("BackendFactory",
 		[
-			'BackendHTTP',
-			'BackendAWS',
+			"BackendHTTP",
+			"BackendAWS",
 			function(
 				BackendHTTP,
 				BackendAWS
@@ -29,7 +29,7 @@ angular.module('enlightenApp')
 			}
 			else
 			{
-				throw new Exception("Invalid backend type");
+				throw new TypeError("Invalid backend type");
 			}
-		}
+		};
 	}]);

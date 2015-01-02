@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,8 +7,8 @@
  * # Settings
  * A Settings singleton
  */
-angular.module('enlightenApp')
-	.factory('Settings', function()
+angular.module("enlightenApp")
+	.factory("Settings", function()
 	{
 		var settings =
 		{
@@ -71,40 +71,44 @@ angular.module('enlightenApp')
 					this.backendType = other.backendType;
 				}
 			}
-		}
+		};
 
 		var loadAWSCredentials = function()
 		{
-			settings.credentials["AWS"].accessKey = localStorage.getItem("aws.accessKey");
-			settings.credentials["AWS"].secretKey = localStorage.getItem("aws.secretKey");
-			settings.credentials["AWS"].region    = localStorage.getItem("aws.region");
-		}
+			settings.credentials.AWS.accessKey = localStorage.getItem("aws.accessKey");
+			settings.credentials.AWS.secretKey = localStorage.getItem("aws.secretKey");
+			settings.credentials.AWS.region    = localStorage.getItem("aws.region");
+		};
 
 		var loadLightroomSettings = function()
 		{
 			settings.lightroom.pathToLrCat = localStorage.getItem("lr.pathToLrCat");
-		}
+		};
 
 		var loadApplicationSettings = function()
 		{
 			settings.application.backendType = localStorage.getItem("app.backendType");
-		}
+		};
 
 		return {
 			hasCredentials: function()
 			{
-				if (!settings.credentials["AWS"].isValid())
+				if (!settings.credentials.AWS.isValid())
+				{
 					loadAWSCredentials();
+				}
 
-				return settings.credentials["AWS"].isValid();
+				return settings.credentials.AWS.isValid();
 			},
 
 			getAWSCredentials: function()
 			{
-				if (!settings.credentials["AWS"].isValid())
+				if (!settings.credentials.AWS.isValid())
+				{
 					loadAWSCredentials();
+				}
 
-				return settings.credentials["AWS"];
+				return settings.credentials.AWS;
 			},
 
 			setAWSCredentials: function(awsCredentials)
@@ -113,13 +117,15 @@ angular.module('enlightenApp')
 				localStorage.setItem("aws.secretKey", awsCredentials.secretKey);
 				localStorage.setItem("aws.region", awsCredentials.region);
 
-				settings.credentials["AWS"].copyFrom(awsCredentials);
+				settings.credentials.AWS.copyFrom(awsCredentials);
 			},
 
 			getLightroomSettings: function()
 			{
 				if (!settings.lightroom.isValid())
+				{
 					loadLightroomSettings();
+				}
 
 				return settings.lightroom;
 			},
@@ -133,7 +139,9 @@ angular.module('enlightenApp')
 			getApplicationSettings: function()
 			{
 				if (!settings.application.isValid())
+				{
 					loadApplicationSettings();
+				}
 
 				return settings.application;
 			},
@@ -143,5 +151,5 @@ angular.module('enlightenApp')
 				localStorage.setItem("app.backendType", applicationSettings.backendType);
 				settings.application.copyFrom(applicationSettings);
 			}
-		}
+		};
 	});

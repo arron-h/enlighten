@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,24 +7,24 @@
  * # MainCtrl
  * Controller of the enlightenApp
  */
-angular.module('enlightenApp')
-	.controller('MainCtrl',
+angular.module("enlightenApp")
+	.controller("MainCtrl",
 		[
-			'$scope',
-			'$location',
-			'SqliteDatabase',
-			'Evented',
-			'FilterFactory',
-			'Settings',
-			'BackendFactory',
+			"$scope",
+			"$location",
+			"SqliteDatabase",
+			"Evented",
+			"FilterFactory",
+			"Settings",
+			"BackendFactory",
 			function (
 				$scope,
 				$location,
-				SqliteDatabase,
-				Evented,
-				FilterFactory,
-				Settings,
-				BackendFactory
+				sqliteDatabase,
+				evented,
+				filterFactory,
+				settings,
+				backendFactory
 				)
 	{
 		$scope.files       = [];
@@ -33,11 +33,11 @@ angular.module('enlightenApp')
 		var db             = null;
 		var currentFilter  = null;
 
-		var backendType = Settings.getApplicationSettings().backendType;
+		var backendType = settings.getApplicationSettings().backendType;
 		var backend     = null;
 		if (backendType)
 		{
-			backend = BackendFactory(backendType);
+			backend = backendFactory(backendType);
 		}
 		else
 		{
@@ -63,71 +63,74 @@ angular.module('enlightenApp')
 
 			currentFilter      = filter;
 			$scope.loadingData = false;
-		}
+		};
 
 		var onFilterChanged = function(filter)
 		{
 			$scope.files = [];
 			loadContent(filter);
-		}
+		};
 
 		var onSuccess = function(database)
 		{
 			$scope.hasError = false;
 			db = database;
 
-			var filter = FilterFactory.defaultFilter();
+			var filter = filterFactory.defaultFilter();
 			onFilterChanged(filter);
 
 			backend.updateScope($scope);
-		}
+		};
 
 		var onError = function()
 		{
 			$scope.hasError = true;
 			backend.updateScope($scope);
-		}
+		};
 
 		$scope.onLoadMoreContent = function()
 		{
 			if ($scope.loadingData)
+			{
 				return;
+			}
 
 			if (!currentFilter)
+			{
 				return;
+			}
 
 			var filter = currentFilter;
 			filter.increaseRange();
 
 			loadContent(filter);
-		}
+		};
 
-		SqliteDatabase(Settings.getLightroomSettings().pathToLrCat,
+		sqliteDatabase(settings.getLightroomSettings().pathToLrCat,
 			backend, { success: onSuccess, error: onError });
 
-		Evented.register("FilterChanged", onFilterChanged);
+		evented.register("FilterChanged", onFilterChanged);
 	}])
 
-	.controller('PathsCtrl',
+	.controller("PathsCtrl",
 		[
-			'$scope',
-			'SqliteDatabase',
-			'Evented',
-			'FilterFactory',
-			'Settings',
-			'BackendFactory',
+			"$scope",
+			"SqliteDatabase",
+			"Evented",
+			"FilterFactory",
+			"Settings",
+			"BackendFactory",
 			function(
 				$scope,
-				SqliteDatabase,
-				Evented,
-				FilterFactory,
-				Settings,
-				BackendFactory
+				sqliteDatabase,
+				evented,
+				filterFactory,
+				settings,
+				backendFactory
 			)
 	{
 		$scope.folderModel = [];
-		$scope.folderTreeOptions = {
-		}
+		$scope.folderTreeOptions = {};
 
 		var onSuccess = function(db)
 		{
@@ -135,65 +138,67 @@ angular.module('enlightenApp')
 			var libraryFolders = db.exec("SELECT id_local,pathFromRoot,rootFolder FROM AgLibraryFolder");
 
 			// Track the folder indices
-			var folderIndices = {}
+			var folderIndices = {};
 
 			// Process root folders
 			for (var rootIdx = 0; rootIdx < rootFolders[0].values.length; ++rootIdx)
 			{
-				var rowVal     = rootFolders[0].values[rootIdx];
+				var rootFoldersRowValue = rootFolders[0].values[rootIdx];
 				var arrayIndex = $scope.folderModel.push(
 				{
-					id: rowVal[0],
-					name: rowVal[1],
+					id:   rootFoldersRowValue[0],
+					name: rootFoldersRowValue[1],
 					itemCount: 0,
 					children: []
 				}) - 1;
 
-				var id_local   = rowVal[0];
-				folderIndices[id_local] = arrayIndex;
+				var rootFolderIdLocal  = rootFoldersRowValue[0];
+				folderIndices[rootFolderIdLocal] = arrayIndex;
 			}
 
 			// Process subfolders
 			for (var folderIdx = 0; folderIdx < libraryFolders[0].values.length; ++folderIdx)
 			{
-				var rowVal = libraryFolders[0].values[folderIdx];
-				var rootIndex = rowVal[2];
-				var id_local  = rowVal[0];
+				var folderRowValue = libraryFolders[0].values[folderIdx];
+				var rootIndex      = folderRowValue[2];
+				var folderIdLocal  = folderRowValue[0];
 
-				if (rowVal[1] == "")
+				if (folderRowValue[1] === "")
+				{
 					continue;
+				}
 
 				var rootArrayIndex = folderIndices[rootIndex];
 				$scope.folderModel[rootArrayIndex].children.push(
 				{
-					id: id_local,
-					name: rowVal[1],
+					id: folderIdLocal,
+					name: folderRowValue[1],
 					itemCount: 0
 				});
 			}
 
 			backend.updateScope($scope);
-		}
+		};
 
 		var onError = function()
 		{
-		}
+		};
 
 		$scope.folderItemClicked = function(node)
 		{
-			var folderFilter = FilterFactory.getFilter("FolderFilter");
+			var folderFilter = filterFactory.getFilter("FolderFilter");
 			folderFilter.folderIndex  = node.id;
 			folderFilter.folderIsRoot = !!node.children;
-			Evented.emit("FilterChanged", [folderFilter]);
-		}
+			evented.emit("FilterChanged", [folderFilter]);
+		};
 
-		var backendType = Settings.getApplicationSettings().backendType;
+		var backendType = settings.getApplicationSettings().backendType;
 
 		if (backendType)
 		{
-			var backend     = BackendFactory(backendType);
+			var backend     = backendFactory(backendType);
 
-			SqliteDatabase(Settings.getLightroomSettings().pathToLrCat,
+			sqliteDatabase(settings.getLightroomSettings().pathToLrCat,
 				backend, { success: onSuccess, error: onError });
 		}
 	}]);

@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-describe('Factory: BackendFactory', function()
+describe("Factory: BackendFactory", function()
 {
-	// load the controller's module
-	beforeEach(module('enlightenApp'));
+	// load the controller"s module
+	beforeEach(module("enlightenApp"));
 
 	var _BackendFactory;
 
@@ -13,13 +13,13 @@ describe('Factory: BackendFactory', function()
 		_BackendFactory = BackendFactory;
 	}));
 
-	it('should return an AWS backend', function()
+	it("should return an AWS backend", function()
 	{
 		var backend = _BackendFactory("AWS");
 		expect(backend.type()).toEqual("AWS");
 	});
 
-	it('should return an HTTP backend', function()
+	it("should return an HTTP backend", function()
 	{
 		var backend = _BackendFactory("HTTP");
 		expect(backend.type()).toEqual("HTTP");

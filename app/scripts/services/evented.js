@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,8 +7,8 @@
  * # Evented
  * A simple event service
  */
-angular.module('enlightenApp')
-	.factory('Evented', function()
+angular.module("enlightenApp")
+	.factory("Evented", function()
 	{
 		var listeners = {};
 
@@ -16,7 +16,9 @@ angular.module('enlightenApp')
 			register: function(eventType, callback)
 			{
 				if (!listeners[eventType])
+				{
 					listeners[eventType] = [];
+				}
 
 				listeners[eventType].push(callback);
 			},
@@ -31,5 +33,5 @@ angular.module('enlightenApp')
 					}
 				}
 			}
-		}
+		};
 	});

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,15 +7,17 @@
  * # SqliteDatabase
  * Loads and returns a Sqlite database via XMLHttpRequest
  */
-angular.module('enlightenApp')
-	.factory('SqliteDatabase', ["$http", function($http)
+angular.module("enlightenApp")
+	.factory("SqliteDatabase", function()
 	{
 		var databaseObjects = {};
 
 		return function(url, backend, callbacks)
 		{
-			if (typeof callbacks != "object")
+			if (typeof callbacks !== "object")
+			{
 				throw new TypeError("Callbacks must be an object");
+			}
 
 			if (!databaseObjects[url])
 			{
@@ -24,7 +26,7 @@ angular.module('enlightenApp')
 				{
 					promises: [callbacks],
 					database: null
-				}
+				};
 
 				var invokeCallbacks = function(promiseList, callbackType)
 				{
@@ -39,11 +41,11 @@ angular.module('enlightenApp')
 					}
 
 					return promiseList;
-				}
+				};
 
 				var onSuccess = function(response, status)
 				{
-					if (status == 200)
+					if (status === 200)
 					{
 						var data = new Uint8Array(response);
 						var db = new SQL.Database(data);
@@ -60,7 +62,7 @@ angular.module('enlightenApp')
 					}
 				};
 
-				var onError = function(response, status)
+				var onError = function()
 				{
 					databaseObjects[url].promises =
 						invokeCallbacks(databaseObjects[url].promises, "error");
@@ -80,5 +82,5 @@ angular.module('enlightenApp')
 					databaseObjects[url].promises.push(callbacks);
 				}
 			}
-		}
-	}]);
+		};
+	});
